@@ -7,28 +7,54 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    # 使用一个已经配置好 Qt 5.15.2 for Android 的 Docker 镜像
-    container: qtcontrib/qt-ci:5.15.2_android
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Set up Android SDK and NDK
+      uses: android-actions/setup-android@v3
+      with:
+        log-level: info
+        cmdline-tools-version: 9477386
+        packages: >-
+          platform-tools
+          platforms;android-31
+          build-tools;30.0.3
+          ndk;21.4.7075529
+
+    - name: Download Qt 5.15.2 for Android
+      run: |
+        mkdir -p $HOME/qt
+        cd $HOME/qt
+        wget --quiet https://github.com/KDAB/android_openssl/releases/download/1.0.0/qt-5.15.2-android-arm64-v8a.tar.xz || true
+        if [ ! -f qt-5.15.2-android-arm64-v8a.tar.xz ]; then
+          # 备用下载源
+          wget --quiet https://github.com/KDAB/android_openssl/releases/download/1.0.0/qt-5.15.2-android-arm64-v8a.tar.xz
+        fi
+        tar -xf qt-5.15.2-android-arm64-v8a.tar.xz || echo "Download failed"
+
+    - name: Setup Qt environment
+      run: |
+        echo "QT_ROOT=$HOME/qt/qt-5.15.2-android-arm64-v8a" >> $GITHUB_ENV
+        echo "$HOME/qt/qt-5.15.2-android-arm64-v8a/bin" >> $GITHUB_PATH
+
     - name: Build APK
       run: |
-        # 进入项目目录并创建构建文件夹
         mkdir -p build
         cd build
-        
-        # 使用镜像内的 qmake 配置项目
-        /opt/qt/5.15.2/android_arm64_v8a/bin/qmake ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a"
-        
-        # 开始编译
-        make -j$(nproc)
-        
-        # 打包成 APK
-        /opt/qt/5.15.2/android_arm64_v8a/bin/androiddeployqt --input android-Android-deployment-settings.json --output android-build --android-platform android-31 --release
+        $QT_ROOT/bin/qmake ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a" ANDROID_MIN_SDK_VERSION=23 ANDROID_TARGET_SDK_VERSION=31
+        make -j2
+        export ANDROID_SDK_ROOT=$ANDROID_HOME
+        export ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/21.4.7075529
+        $QT_ROOT/bin/androiddeployqt --input android-Android-deployment-settings.json --output android-build --android-platform android-31 --release --verbose
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
