@@ -187,7 +187,7 @@ font: 36pt &quot;方正粗黑宋简体&quot;;
 color: rgb(170, 85, 127);</string>
       </property>
       <property name="text">
-       <string>化作尘蓝牙控制器</string>
+       <string>蓝牙控制器</string>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
