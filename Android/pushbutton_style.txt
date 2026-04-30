@@ -1,0 +1,156 @@
+ 紫色
+
+QPushButton {
+color: #333;
+border: 3px solid #aaaaff;
+font: 30pt "宋体";
+border-radius: 25px;
+padding: 5px;
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.35, stop: 0 #fff, stop: 1 #aa557f);
+min-width: 80px;
+}
+
+QPushButton:hover {
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.35, stop: 0 #fff, stop: 1 #aa7f95);
+}
+
+ QPushButton:pressed {
+background: qradialgradient(cx: 0.4, cy: -0.1,
+fx: 0.4, fy: -0.1,
+radius: 1.35, stop: 0 #fff, stop: 1 #aa959f);
+}
+
+
+蓝色
+
+ QPushButton {
+color: #333;
+border: 3px solid #00aaff;
+font: 30pt "宋体";
+border-radius: 25px;
+padding: 5px;
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.35, stop: 0 #fff, stop: 1 #00aaff);
+min-width: 80px;
+}
+
+QPushButton:hover {
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.35, stop: 0 #fff, stop: 1 #80d5ff);
+}
+
+ QPushButton:pressed {
+background: qradialgradient(cx: 0.4, cy: -0.1,
+fx: 0.4, fy: -0.1,
+radius: 1.35, stop: 0 #fff, stop: 1 #c0eaff);
+}
+
+
+青色
+ QPushButton {
+color: #333;
+border: 3px solid #005500;
+font: 30pt "宋体";
+border-radius: 25px;
+padding: 5px;
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.83, stop: 0 #fff, stop: 1 #00aa00);
+min-width: 80px;
+}
+
+QPushButton:hover {
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.83, stop: 0 #fff, stop: 1 #ffaaff);
+}
+
+ QPushButton:pressed {
+background: qradialgradient(cx: 0.4, cy: -0.1,
+fx: 0.4, fy: -0.1,
+radius: 1.83, stop: 0 #fff, stop: 1 #00ff7f);
+}
+
+
+青色2
+
+QPushButton {
+color: #333;
+border: 3px solid #005500;
+font: 30pt "宋体";
+border-radius: 12px;
+padding: 5px;
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.35, stop: 0 #fff, stop: 1 #55aa7f);
+min-width: 80px;
+}
+
+QPushButton:hover {
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.35, stop: 0 #fff, stop: 1 #7faa94);
+}
+
+ QPushButton:pressed {
+background: qradialgradient(cx: 0.4, cy: -0.1,
+fx: 0.4, fy: -0.1,
+radius: 1.35, stop: 0 #fff, stop: 1 #555500);
+}
+
+橙色
+ QPushButton {
+color: #333;
+border: 3px solid #ffaa00;
+font: 30pt "宋体";
+border-radius: 25px;
+padding: 5px;
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.83, stop: 0 #fff, stop: 1 #ffaa7f);
+min-width: 80px;
+}
+
+QPushButton:hover {
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.83, stop: 0 #fff, stop: 1 #ffd5bf);
+}
+
+ QPushButton:pressed {
+background: qradialgradient(cx: 0.4, cy: -0.1,
+fx: 0.4, fy: -0.1,
+radius: 1.83, stop: 0 #fff, stop: 1 #ffeadf);
+}
+
+紫红
+
+ QPushButton {
+color: #333;
+border: 3px solid #aa0000;
+font: 30pt "宋体";
+border-radius: 25px;
+padding: 5px;
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.83, stop: 0 #fff, stop: 1 #aa007f);
+min-width: 80px;
+}
+
+QPushButton:hover {
+background: qradialgradient(cx: 0.3, cy: -0.4,
+fx: 0.3, fy: -0.4,
+radius: 1.83, stop: 0 #fff, stop: 1 #aa5595);
+}
+
+ QPushButton:pressed {
+background: qradialgradient(cx: 0.4, cy: -0.1,
+fx: 0.4, fy: -0.1,
+radius: 1.83, stop: 0 #fff, stop: 1 #aa80a0);
+}

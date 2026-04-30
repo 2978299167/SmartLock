@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pic/add.png</file>
+        <file>pic/start.png</file>
+        <file>pic/sub.png</file>
+        <file>pic/down.png</file>
+        <file>pic/up.png</file>
+        <file>pic/about.png</file>
+        <file>pic/connect.png</file>
+        <file>pic/back.png</file>
+        <file>pic/btmenu1.jpg</file>
+        <file>pic/btmenu2.jpg</file>
+        <file>pic/btmenuv2.jpg</file>
+        <file>pic/setting.png</file>
+        <file>pic/btsetting.jpg</file>
+        <file>pic/eye.png</file>
+        <file>pic/smartku.jpg</file>
+    </qresource>
+</RCC>
