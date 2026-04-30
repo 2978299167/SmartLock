@@ -7,32 +7,56 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     container:
-      image: qt/qt:6.6.0-android
-      options: --user root
+      image: ubuntu:22.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y openjdk-17-jdk
+          apt-get install -y --no-install-recommends \
+            wget unzip zip openjdk-17-jdk \
+            build-essential cmake \
+            libgl1-mesa-dev libxcb-xinerama0-dev \
+            libxcb-xkb-dev libxcb-xfixes0-dev libxcb-shape0-dev
+          apt-get clean
+
+      - name: Install Android SDK and NDK
+        run: |
+          mkdir -p /opt/android-sdk
+          cd /opt/android-sdk
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          rm commandlinetools-linux-11076708_latest.zip
+          mkdir -p cmdline-tools
+          mv cmdline-tools cmdline-tools/latest
+          export PATH=/opt/android-sdk/cmdline-tools/latest/bin:$PATH
+          export ANDROID_HOME=/opt/android-sdk
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0" "ndk;21.4.7075529"
+
+      - name: Install Qt 6.6.0 for Android
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends software-properties-common
+          add-apt-repository -y ppa:savoury1/qt-6
+          apt-get update
+          apt-get install -y qt6-qmake qt6-base-dev qt6-declarative-dev qt6-base-dev-tools
+          apt-get install -y qt6-android qt6-android-dev qt6-android-dev-tools
 
       - name: Build APK
         run: |
           export ANDROID_SDK_ROOT=/opt/android-sdk
-          export ANDROID_NDK_ROOT=/opt/android-ndk
+          export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/21.4.7075529
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          export PATH=$JAVA_HOME/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
           
-          mkdir build && cd build
-          /opt/qt/6.6.0/android/bin/qmake ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a"
+          mkdir -p build && cd build
+          qmake6 ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a"
           make -j$(nproc)
-          /opt/qt/6.6.0/android/bin/androiddeployqt \
-            --input android-Android-deployment-settings.json \
-            --output android-build \
-            --android-platform android-31 \
-            --release
+          androiddeployqt6 --input android-Android-deployment-settings.json --output android-build --android-platform android-31 --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
