@@ -180,14 +180,8 @@ AboutMainWindow::AboutMainWindow(QWidget *parent) : QMainWindow(parent)
     textBrowser = new QTextBrowser(this);
     textBrowser->setGeometry(0,150,1080*src_w/1080,1900);
     textBrowser->setStyleSheet("background-color: rgba(255, 255, 255, 200);font-size:60px;color: rgb(0, 0, 0);");
-    textBrowser->setText("项目：智能门锁控制器\r\n"
-                         "作者：化作尘\r\n"
-                         "更新日期：2021年11月29日\r\n"
-                         "版本：V1.00\r\n"
-                         "邮箱：2809786963@qq.com\r\n"
-                         "CSDN：化作尘\r\n"
-                         "哔哩哔哩：化作尘my\r\n"
-                         "软件说明：用于控制化作尘指纹锁\r\n"
+    textBrowser->setText("项目：STM32智能学生门禁系统\r\n"
+                         "作者：雷忆文\r\n"
                          );
     textBrowser->show();
 
