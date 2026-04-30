@@ -7,48 +7,33 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    container: ubuntu:22.04
+    runs-on: ubuntu-latest
+    # 使用一个已经配置好 Qt 5.15.2 for Android 的 Docker 镜像
+    container: qtcontrib/qt-ci:5.15.2_android
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        apt-get update
-        apt-get install -y wget unzip zip openjdk-17-jdk git build-essential cmake
-        apt-get install -y libgl1-mesa-dev libxcb-xinerama0-dev libxcb-xkb-dev libxcb-xfixes0-dev libxcb-shape0-dev
-
-    - name: Install Android SDK
-      run: |
-        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-        mkdir -p /opt/android-sdk/cmdline-tools
-        unzip commandlinetools-linux-11076708_latest.zip -d /opt/android-sdk/cmdline-tools
-        mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
-        export ANDROID_HOME=/opt/android-sdk
-        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-        yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0" "ndk;21.3.6528147"
-
-    - name: Download and extract Qt
-      run: |
-        wget https://mirrors.tuna.tsinghua.edu.cn/qt/online/qtsdkrepository/linux_x64/android/android_qt5_15_2_arm64_v8a/qt.qt5.5152.android_arm64_v8a/5.15.2-0-202011130738qtbase-Android-Android_Qt_5_15_2_arm64_v8a-Debug.7z
-        7z x *.7z -o/opt/qt/
-        echo "/opt/qt/lib" > /etc/ld.so.conf.d/qt.conf
-        ldconfig
-
     - name: Build APK
       run: |
+        # 进入项目目录并创建构建文件夹
         mkdir -p build
         cd build
-        /opt/qt/bin/qmake ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a"
-        make -j2
+        
+        # 使用镜像内的 qmake 配置项目
+        /opt/qt/5.15.2/android_arm64_v8a/bin/qmake ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a"
+        
+        # 开始编译
+        make -j$(nproc)
+        
+        # 打包成 APK
+        /opt/qt/5.15.2/android_arm64_v8a/bin/androiddeployqt --input android-Android-deployment-settings.json --output android-build --android-platform android-31 --release
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: SmartLock-APK
         path: |
-          build/*.apk
           build/android-build/build/outputs/apk/release/*.apk
+          build/android-build/*.apk
