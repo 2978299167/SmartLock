@@ -451,7 +451,7 @@ color: rgb(255, 255, 255);</string>
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
-     <string>化作尘蓝牙控制</string>
+     <string>蓝牙控制</string>
     </property>
    </widget>
    <addaction name="menu"/>
