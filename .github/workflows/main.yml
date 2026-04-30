@@ -1,65 +1,37 @@
-name: Build Qt Android APK
+name: Build Android APK
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
+    container:
+      image: qt/qt:6.6-android
+      options: --user root
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Build APK
+        run: |
+          export ANDROID_SDK_ROOT=/opt/android-sdk
+          export ANDROID_NDK_ROOT=/opt/android-ndk
+          
+          mkdir build && cd build
+          /opt/qt/6.6/android/bin/qmake ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a"
+          make -j$(nproc)
+          /opt/qt/6.6/android/bin/androiddeployqt \
+            --input android-Android-deployment-settings.json \
+            --output android-build \
+            --android-platform android-31 \
+            --release
 
-    - name: Set up Android SDK and NDK
-      uses: android-actions/setup-android@v3
-      with:
-        log-level: info
-        cmdline-tools-version: 9477386
-        packages: >-
-          platform-tools
-          platforms;android-31
-          build-tools;30.0.3
-          ndk;21.4.7075529
-
-    - name: Download Qt 5.15.2 for Android
-      run: |
-        mkdir -p $HOME/qt
-        cd $HOME/qt
-        wget --quiet https://github.com/KDAB/android_openssl/releases/download/1.0.0/qt-5.15.2-android-arm64-v8a.tar.xz || true
-        if [ ! -f qt-5.15.2-android-arm64-v8a.tar.xz ]; then
-          # 备用下载源
-          wget --quiet https://github.com/KDAB/android_openssl/releases/download/1.0.0/qt-5.15.2-android-arm64-v8a.tar.xz
-        fi
-        tar -xf qt-5.15.2-android-arm64-v8a.tar.xz || echo "Download failed"
-
-    - name: Setup Qt environment
-      run: |
-        echo "QT_ROOT=$HOME/qt/qt-5.15.2-android-arm64-v8a" >> $GITHUB_ENV
-        echo "$HOME/qt/qt-5.15.2-android-arm64-v8a/bin" >> $GITHUB_PATH
-
-    - name: Build APK
-      run: |
-        mkdir -p build
-        cd build
-        $QT_ROOT/bin/qmake ../Android.pro -spec android-clang ANDROID_ABIS="arm64-v8a" ANDROID_MIN_SDK_VERSION=23 ANDROID_TARGET_SDK_VERSION=31
-        make -j2
-        export ANDROID_SDK_ROOT=$ANDROID_HOME
-        export ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/21.4.7075529
-        $QT_ROOT/bin/androiddeployqt --input android-Android-deployment-settings.json --output android-build --android-platform android-31 --release --verbose
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: SmartLock-APK
-        path: |
-          build/android-build/build/outputs/apk/release/*.apk
-          build/android-build/*.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: |
+            build/android-build/build/outputs/apk/release/*.apk
+            build/android-build/*.apk
