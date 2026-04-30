@@ -336,7 +336,7 @@ void MainWindow::Label_Init(void)
 
 
     time_info = new QTimer(this);
-    this->label_info->setText("    欢迎使用化作尘智能门锁控制器！");
+    this->label_info->setText(" ");
     time_info->start(2000);
     connect(time_info,&QTimer::timeout,[=](){
         time_info->stop();
